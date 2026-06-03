@@ -1,34 +1,46 @@
+import { Container, Spinner, Alert } from 'react-bootstrap';
+import SearchBar from '../components/SearchBar';
 import CurrentWeather from '../components/CurrentWeather';
-import ForecastCard from '../components/ForecastCard';
+import WeatherForecast from '../components/WeatherForecast';
 
-const data = {
-  "dt": 1700000000,
-  "temp": 22.5,
-  "feels_like": 21.0,
-  "humidity": 60,
-  "wind_speed": 5.5,
-  "weather": [
-    {
-      "description": "clear sky",  
-      "icon": "01d"
-    }
-  ]
-};
-const city = "Kyiv";
+import { useEffect } from 'react';
+import { useWeather } from '../hooks/useWeather';
 
 const Home = () => {
+  const { weather, loading, error, searchCity } = useWeather();
+
+  useEffect(() => {
+    searchCity('Kyiv');
+  }, []); 
+
   return (
-    <div className="home">  
-        <CurrentWeather data={data} city={city} />
-        <hr/>
-        <ForecastCard 
-          title="tomorrow" 
-          icon="02d"
-          temp="24°C"
-          subtitle="Мінлива хмарність"
-        />
-    </div>
-  )
+    <Container className="py-5" style={{ maxWidth: '900px' }}>
+      <h1 className="text-center mb-4 fw-bold text-primary">Weather Dashboard</h1>
+      
+      <SearchBar onSearch={searchCity} />
+
+      {loading && (
+        <div className="text-center my-5">
+          <Spinner animation="border" variant="primary" role="status">
+            <span className="visually-hidden">Завантаження...</span>
+          </Spinner>
+        </div>
+      )}
+
+      {error && (
+        <Alert variant="danger" className="text-center shadow-sm">
+          {error}
+        </Alert>
+      )}
+
+      {weather && !loading && (
+        <div className="fade-in">
+          <CurrentWeather data={weather.current} city={weather.cityName} />
+          <WeatherForecast hourly={weather.hourly} daily={weather.daily} />
+        </div>
+      )}
+    </Container>
+  );
 };
 
 export default Home;
