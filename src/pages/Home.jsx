@@ -1,4 +1,6 @@
 import CurrentWeather from '../components/CurrentWeather';
+import ForecastCard from '../components/ForecastCard';
+
 const data = {
   "dt": 1700000000,
   "temp": 22.5,
@@ -18,6 +20,13 @@ const Home = () => {
   return (
     <div className="home">  
         <CurrentWeather data={data} city={city} />
+        <hr/>
+        <ForecastCard 
+          title="tomorrow" 
+          icon="02d"
+          temp="24°C"
+          subtitle="Мінлива хмарність"
+        />
     </div>
   )
 };
