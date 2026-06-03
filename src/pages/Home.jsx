@@ -7,10 +7,24 @@ import { useEffect } from 'react';
 import { useWeather } from '../hooks/useWeather';
 
 const Home = () => {
-  const { weather, loading, error, searchCity } = useWeather();
+  const { weather, loading, error, searchCity, searchByLocation } = useWeather();
 
-  useEffect(() => {
-    searchCity('Kyiv');
+useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          searchByLocation(latitude, longitude);
+        },
+        (error) => {
+          console.warn("Геолокація недоступна або відхилена:", error.message);
+          searchCity("Kyiv");
+        },
+        { timeout: 5000 }
+      );
+    } else {
+      searchCity('Kyiv');
+    }
   }, []);
 
   return (

@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { fetchWeatherForCity } from "../api/weatherService";
+import {
+  fetchWeatherForCity,
+  fetchWeatherByCoords,
+} from "../api/weatherService";
 
 export const useWeather = () => {
   const [weather, setWeather] = useState(null);
@@ -23,5 +26,19 @@ export const useWeather = () => {
     }
   };
 
-  return { weather, loading, error, searchCity };
+  const searchByLocation = async (lat, lon) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchWeatherByCoords(lat, lon);
+      setWeather(data);
+    } catch (err) {
+      setError(err.message || "Не вдалося визначити погоду для вашої локації");
+      setWeather(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { weather, loading, error, searchCity, searchByLocation };
 };
