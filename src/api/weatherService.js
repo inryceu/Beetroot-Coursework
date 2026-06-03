@@ -1,52 +1,45 @@
-const API_KEY = import.meta.env.OPENWEATHER_API_KEY;
-const BASE_URL = import.meta.env.OPENWEATHER_BASE_URL;
-const GEO_URL = import.meta.env.OPENWEATHER_GEO_URL;
+const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
+const BASE_URL = import.meta.env.VITE_OPENWEATHER_BASE_URL;
 
-export const getCoordinates = async (city) => {
-  try {
-    const response = await fetch(
-      `${GEO_URL}/direct?q=${encodeURIComponent(city)}&limit=1&appid=${API_KEY}`,
-    );
+export const getCurrentWeather = async (city) => {
+  const response = await fetch(
+    `${BASE_URL}/weather?q=${encodeURIComponent(city)}&units=metric&lang=uk&appid=${API_KEY}`,
+  );
 
-    if (!response.ok) {
-      throw new Error(`Помилка геокодування: ${response.status}`);
-    }
-
-    const data = await response.json();
-
-    if (data.length === 0) {
-      throw new Error("Місто не знайдено");
-    }
-
-    return { lat: data[0].lat, lon: data[0].lon, name: data[0].name };
-  } catch (error) {
-    console.error("getCoordinates error:", error);
-    throw error;
+  if (!response.ok) {
+    if (response.status === 404) throw new Error("Місто не знайдено");
+    throw new Error(`Помилка отримання поточної погоди: ${response.status}`);
   }
+
+  return await response.json();
 };
 
-export const getWeatherData = async (lat, lon) => {
-  try {
-    const response = await fetch(
-      `${BASE_URL}/onecall?lat=${lat}&lon=${lon}&exclude=minutely,alerts&units=metric&lang=uk&appid=${API_KEY}`,
-    );
+export const getForecast = async (city) => {
+  const response = await fetch(
+    `${BASE_URL}/forecast?q=${encodeURIComponent(city)}&units=metric&lang=uk&appid=${API_KEY}`,
+  );
 
-    if (!response.ok) {
-      throw new Error(`Помилка отримання погоди: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error("getWeatherData error:", error);
-    throw error;
+  if (!response.ok) {
+    throw new Error(`Помилка отримання прогнозу: ${response.status}`);
   }
+
+  return await response.json();
 };
 
 export const fetchWeatherForCity = async (city) => {
-  const coords = await getCoordinates(city);
-  const weatherData = await getWeatherData(coords.lat, coords.lon);
-  return {
-    cityName: coords.name,
-    ...weatherData,
-  };
+  try {
+    const [currentData, forecastData] = await Promise.all([
+      getCurrentWeather(city),
+      getForecast(city),
+    ]);
+
+    return {
+      cityName: currentData.name,
+      current: currentData,
+      forecast: forecastData.list,
+    };
+  } catch (error) {
+    console.error("fetchWeatherForCity error:", error);
+    throw error;
+  }
 };

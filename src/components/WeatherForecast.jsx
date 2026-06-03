@@ -3,32 +3,24 @@ import { Tabs, Tab, Row, Col } from 'react-bootstrap';
 import ForecastCard from './ForecastCard';
 import { formatTime, formatShortDay } from '../utils/formatDate';
 
-const WeatherForecast = ({ hourly, daily }) => {
+const WeatherForecast = ({ forecastList }) => {
   const [key, setKey] = useState('hourly');
 
-  const threeHourForecast = hourly
-    .filter((_, index) => index % 3 === 0)
-    .slice(0, 8);
-    
-  const fiveDayForecast = daily.slice(1, 6);
+  const threeHourForecast = forecastList.slice(0, 8);
+  
+  const fiveDayForecast = forecastList.filter((_, index) => index % 8 === 0);
 
   return (
     <div className="mt-4">
-      <Tabs
-        id="forecast-tabs"
-        activeKey={key}
-        onSelect={(k) => setKey(k)}
-        className="mb-4"
-        variant="pills"
-      >
-        <Tab eventKey="hourly" title="На 24 години (кожні 3 год)">
+      <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-4" variant="pills">
+        <Tab eventKey="hourly" title="На 24 години">
           <Row className="g-3">
             {threeHourForecast.map((item) => (
               <Col xs={6} sm={4} md={3} lg={3} key={item.dt}>
                 <ForecastCard 
                   title={formatTime(item.dt)}
                   icon={item.weather[0].icon}
-                  temp={`${Math.round(item.temp)}°C`}
+                  temp={`${Math.round(item.main.temp)}°C`}
                 />
               </Col>
             ))}
@@ -43,7 +35,7 @@ const WeatherForecast = ({ hourly, daily }) => {
                   title={formatShortDay(item.dt)}
                   subtitle={item.weather[0].description}
                   icon={item.weather[0].icon}
-                  temp={`${Math.round(item.temp.max)}° / ${Math.round(item.temp.min)}°`}
+                  temp={`${Math.round(item.main.temp)}°C`}
                 />
               </Col>
             ))}

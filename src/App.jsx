@@ -1,10 +1,12 @@
-import './App.css'
 import Home from './pages/Home';
+import './App.css';
 
-const App = () => {
+function App() {
   return (
-    <Home />
-  )
-};
+    <div className="app-shell">
+      <Home />
+    </div>
+  );
+}
 
 export default App;

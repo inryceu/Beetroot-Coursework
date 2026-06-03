@@ -11,7 +11,7 @@ const Home = () => {
 
   useEffect(() => {
     searchCity('Kyiv');
-  }, []); 
+  }, []);
 
   return (
     <Container className="py-5" style={{ maxWidth: '900px' }}>
@@ -36,7 +36,7 @@ const Home = () => {
       {weather && !loading && (
         <div className="fade-in">
           <CurrentWeather data={weather.current} city={weather.cityName} />
-          <WeatherForecast hourly={weather.hourly} daily={weather.daily} />
+          <WeatherForecast forecastList={weather.forecast} />
         </div>
       )}
     </Container>
