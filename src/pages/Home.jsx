@@ -5,33 +5,41 @@ import WeatherForecast from '../components/WeatherForecast';
 
 import { useEffect } from 'react';
 import { useWeather } from '../hooks/useWeather';
+import { useSearchHistory } from '../hooks/useSearchHistory';
 
 const Home = () => {
   const { weather, loading, error, searchCity, searchByLocation } = useWeather();
+  const { history, addCityToHistory } = useSearchHistory();
 
-useEffect(() => {
+  useEffect(() => {
     if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           searchByLocation(latitude, longitude);
         },
-        (error) => {
-          console.warn("Геолокація недоступна або відхилена:", error.message);
-          searchCity("Kyiv");
+        (err) => {
+          console.warn("Геолокація недоступна або відхилена:", err.message);
+          searchCity("Київ");
         },
         { timeout: 5000 }
       );
     } else {
-      searchCity('Kyiv');
+      searchCity('Київ');
     }
   }, []);
+
+  useEffect(() => {
+    if (weather && weather.cityName) {
+      addCityToHistory(weather.cityName);
+    }
+  }, [weather]);
 
   return (
     <Container className="py-5" style={{ maxWidth: '900px' }}>
       <h1 className="text-center mb-4 fw-bold text-primary">Weather Dashboard</h1>
       
-      <SearchBar onSearch={searchCity} />
+      <SearchBar onSearch={searchCity} history={history} />
 
       {loading && (
         <div className="text-center my-5">
