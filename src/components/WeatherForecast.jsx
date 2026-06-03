@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import ForecastSwitch from './ForecastSwitch';
+import ForecastSwitch from './ForecastItems/ForecastSwitch';
 import HourlyGrid from './Grids/HourlyGrid';
 import DailyGrid from './Grids/DailyGrid';
 

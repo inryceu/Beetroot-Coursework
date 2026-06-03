@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import SearchForm from './SearchForm';
-import SearchHistory from './SearchHistory';
+import SearchForm from './SearchItems/SearchForm';
+import SearchHistory from './SearchItems/SearchHistory';
 
 const SearchBar = ({ onSearch, history }) => {
   const [city, setCity] = useState('');

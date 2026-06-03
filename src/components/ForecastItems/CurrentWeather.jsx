@@ -1,5 +1,5 @@
 import { Card, Row, Col } from 'react-bootstrap';
-import { formatDay } from '../utils/formatDate';
+import { formatDay } from '../../utils/formatDate';
 
 const CurrentWeather = ({ data, city }) => {
   if (!data) return null;

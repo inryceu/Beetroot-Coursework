@@ -1,5 +1,5 @@
 import React from 'react';
-import ForecastCard from '../ForecastCard';
+import ForecastCard from '../ForecastItems/ForecastCard';
 import { formatTime } from '../../utils/formatDate';
 
 const HourlyGrid = ({ data }) => {

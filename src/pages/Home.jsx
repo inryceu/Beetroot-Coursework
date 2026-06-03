@@ -1,11 +1,14 @@
 import { Container, Spinner, Alert } from 'react-bootstrap';
 import SearchBar from '../components/SearchBar';
-import CurrentWeather from '../components/CurrentWeather';
+import CurrentWeather from '../components/ForecastItems/CurrentWeather';
 import WeatherForecast from '../components/WeatherForecast';
 
 import { useEffect } from 'react';
 import { useWeather } from '../hooks/useWeather';
 import { useSearchHistory } from '../hooks/useSearchHistory';
+
+import { Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap';
 
 const Home = () => {
   const { weather, loading, error, searchCity, searchByLocation } = useWeather();
@@ -58,6 +61,15 @@ const Home = () => {
       {weather && !loading && (
         <div className="fade-in">
           <CurrentWeather data={weather.current} city={weather.cityName} />
+              {weather && !loading && (
+                <div className="fade-in">
+                  <Link to="/charts" state={{ forecast: weather.forecast }}>
+                    <Button variant="primary" className="w-100 mb-2 fw-bold text-white shadow-sm">
+                      Відкрити графіки
+                    </Button>
+                  </Link>
+                </div>  
+              )}
           <WeatherForecast forecastList={weather.forecast} />
         </div>
       )}
